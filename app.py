@@ -10,27 +10,22 @@ home_page = st.Page(
 )
 model_1_page = st.Page(
     "test_resnet50.py",
-    title="Test using ResNet50",
+    title="Test using CNN",
     icon=":material/mystery:",
 )
-model_2_page = st.Page(
-    "test_vgg16.py",
-    title="Test using VGG16",
-    icon=":material/symptoms:",
-)
 model_3_page = st.Page(
-    "test_gnn.py",
-    title="Test using VGG16",
+    "test_gnn2.py",
+    title="Test using GNN",
     icon=":material/symptoms:",
 )
 info_resnet50 = st.Page(
     "about_resnet50.py",
-    title="About Model Resnet50",
+    title="About Model CNN",
     icon=":material/info:",
 )
 info_vgg16 = st.Page(
     "about_vgg16.py",
-    title="About Model VGG16",
+    title="About Model GNN",
     icon=":material/info:",
 )
 
@@ -38,7 +33,7 @@ info_vgg16 = st.Page(
 pg = st.navigation(
     {
         "Home Page": [home_page],
-        "Model Using": [model_1_page, model_2_page, model_3_page],
+        "Model Using": [model_1_page, model_3_page],
         "Information": [info_resnet50, info_vgg16],
     }
 )
