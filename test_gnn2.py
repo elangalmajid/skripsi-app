@@ -18,7 +18,7 @@ from model import mobilevig  # pastikan path sesuai
 CLASSES = ["Dark", "Green", "Light", "Medium"]  # urutan sama dengan fine-tune
 NUM_CLASSES = len(CLASSES)
 IMG_SIZE = 224
-FINETUNED_PATH = "mobilevig_finetuned_4cls.pth"
+FINETUNED_PATH = "mobilevig_finetuned_clean.pth"
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 INCEPTION_H5_PATH = "model_Inception.h5"
