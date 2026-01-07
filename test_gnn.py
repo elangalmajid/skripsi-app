@@ -11,36 +11,33 @@ from tensorflow.keras.preprocessing.image import img_to_array
 
 # ========== PYTORCH (untuk klasifikasi MobileViG) ==========
 import torch
-import torch.nn as nn
-from torchvision import transforms
+from torchvision.transforms import v2
 from model import mobilevig  # pastikan path sesuai
 
 # ================== CONFIG ==================
-CLASSES = ["Dark", "Green", "Light", "Medium"]   # urutan harus sama dengan training
+CLASSES = ["Dark", "Green", "Light", "Medium"]  # urutan sama dengan fine-tune
 NUM_CLASSES = len(CLASSES)
 IMG_SIZE = 224
+FINETUNED_PATH = "mobilevig_finetuned_clean.pth"
 
-# Path model
-CKPT_PATH = "mobilevig_cpu_clean.pth"
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 INCEPTION_H5_PATH = "model_Inception.h5"
 
 # Inception config
-EYE_LABEL_INDEX = 0      # index kelas valid pada Inception
+EYE_LABEL_INDEX = 0
 INCEPTION_THRESHOLD = 0.5
 
-# Transform (samakan dengan training)
-torch_tf = transforms.Compose([
-    transforms.Resize((IMG_SIZE, IMG_SIZE)),
-    transforms.ToTensor(),  # jika training pakai rescale=1./255
-    # Jika training pakai normalisasi ImageNet, aktifkan ini:
-    # transforms.Normalize([0.485, 0.456, 0.406],
-    #                      [0.229, 0.224, 0.225]),
+# Transformasi sama seperti training fine-tune
+transform = v2.Compose([
+    v2.Resize((IMG_SIZE, IMG_SIZE)),
+    v2.ToImage(),
+    v2.ToDtype(torch.float32, scale=True),
+    v2.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
 # ================== STREAMLIT CONFIG ==================
 st.set_page_config(page_title="Klasifikasi Biji Kopi", page_icon="☕", layout="centered")
 st.title("☕ Klasifikasi Tingkat Kematangan Sangrai Biji Kopi dengan GNN")
-# st.write("Upload gambar → diverifikasi dengan **InceptionV3** → diprediksi dengan **MobileViG**")
 
 # ================== INCEPTION ==================
 def preprocess_for_inception(image, target_size=(299, 299)):
@@ -67,74 +64,89 @@ def is_valid_image(image, threshold=INCEPTION_THRESHOLD):
     preds = inception_model.predict(batch, verbose=0)
     return preds[0][EYE_LABEL_INDEX] > threshold
 
-# ================== LOAD MOBILEVIG ==================
+# ================== LOAD MOBILEVIG_S FINE-TUNED ==================
 @st.cache_resource
 def load_mobilevig():
-    if not os.path.exists(CKPT_PATH):
-        st.error(f"❌ Checkpoint tidak ditemukan: {CKPT_PATH}")
+    # Buat model pretrained ImageNet 1000 kelas
+    model = mobilevig.mobilevig_s(num_classes=1000)
+
+    if not os.path.exists(FINETUNED_PATH):
+        st.error(f"❌ Model fine-tuned tidak ditemukan: {FINETUNED_PATH}")
         st.stop()
 
-    model = mobilevig.mobilevig_s(num_classes=NUM_CLASSES)
-    state = torch.load(CKPT_PATH, map_location="cpu")
+    # Load checkpoint fine-tuned
+    checkpoint = torch.load(FINETUNED_PATH, map_location=DEVICE)
+    if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+        checkpoint = checkpoint["state_dict"]
 
-    if isinstance(state, dict) and "state_dict" in state:
-        state = state["state_dict"]
+    # Ganti head menjadi 4 kelas
+    in_features = model.head.in_channels if hasattr(model.head, "in_channels") else 512
+    model.head = torch.nn.Conv2d(in_features, NUM_CLASSES, kernel_size=1, bias=True)
 
-    msd = model.state_dict()
-    filtered = {k: v for k, v in state.items() if k in msd and v.shape == msd[k].shape}
-    msd.update(filtered)
-    model.load_state_dict(msd, strict=False)
-    model.eval()
-    return model
+    # Load checkpoint ke head dan layer lain jika cocok
+    model_dict = model.state_dict()
+    filtered_dict = {k: v for k, v in checkpoint.items() if k in model_dict and v.shape == model_dict[k].shape}
+    model_dict.update(filtered_dict)
+    model.load_state_dict(model_dict)
+
+    return model.to(DEVICE).eval()
 
 torch_model = load_mobilevig()
 
-# ================== PREDICT ==================
+# ================== PREDICT FUNCTION SAFE ==================
 @torch.no_grad()
 def predict_image(img: Image.Image):
-    x = torch_tf(img.convert("RGB")).unsqueeze(0)
-    logits = torch_model(x)
-    probs = torch.softmax(logits, dim=1)[0].numpy()
+    try:
+        x = transform(img.convert("RGB")).unsqueeze(0).to(DEVICE)
+        logits = torch_model(x)
 
-    top_i = int(np.argmax(probs))
-    return CLASSES[top_i], float(probs[top_i]), probs
+        # Flatten output jika shape [B, C, 1, 1]
+        if logits.dim() > 2:
+            logits = logits.flatten(2).squeeze(-1)
+
+        probs = torch.softmax(logits, dim=1).cpu().numpy()  # [1, NUM_CLASSES]
+
+        # Debug
+        # st.write(f"Debug: logits shape={logits.shape}, probs shape={probs.shape}")
+
+        # Validasi output
+        if probs.shape[0] == 0 or probs.shape[1] != NUM_CLASSES:
+            st.error(f"Output model tidak sesuai. Expected NUM_CLASSES={NUM_CLASSES}, got {probs.shape}")
+            return None, None, None
+
+        top_i = int(np.argmax(probs, axis=1)[0])
+        return CLASSES[top_i], float(probs[0][top_i]), probs[0]
+
+    except Exception as e:
+        st.error(f"Terjadi error saat prediksi: {e}")
+        return None, None, None
 
 # ================== STREAMLIT UI ==================
-uploaded_file = st.file_uploader("📤 Upload gambar biji kopi", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Silahkan upload gambar biji kopi anda", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
-    # st.image(image, caption="Gambar diupload", use_container_width=True)
-    
-    # 1️⃣ Verifikasi otomatis dengan Inception
+
     if is_valid_image(image):
         col1, col2, col3 = st.columns([1, 3, 1])
         with col2:
             st.image(image, caption="✅ Gambar sesuai", width=350)
 
         if st.button("🔍 Proses"):
-            try:
-                label, conf, probs = predict_image(image)
+            label, conf, probs = predict_image(image)
+            if label is not None:
+                st.success(f"**Hasil:** {label} ({conf*100:.2f}% confidence)")
+                # df = pd.DataFrame({
+                #     "Kelas": CLASSES,
+                #     "Confidence (%)": (probs * 100).round(2)
+                # })
+                # st.dataframe(df)
 
-                st.success(f"**Hasil:** {label} ({conf*100:.2f}%)")
-
-                    # df = pd.DataFrame({
-                    #     "Kelas": CLASSES,
-                    #     "Confidence (%)": (probs * 100).round(2)
-                    # })
-                    
-
-            except Exception:
-                pass
     else:
-        # kalau tidak valid oleh Inception
         col1, col2, col3 = st.columns([1, 3, 1])
         with col2:
             st.image(image, caption="❌ Gambar tidak sesuai", width=350)
         st.error("Gambar tidak sesuai, silakan upload gambar yang sesuai contoh di atas.")
-            
-
-
 
 
 # ================== FOOTER ==================

@@ -62,7 +62,7 @@ if uploaded_image is not None:
         
         with col2:
             # Preview gambar di tengah dengan ukuran terkontrol
-            st.image(image, caption="Gambar telah sesuai, Silahkan melanjutkan proses", width=350, use_container_width=False)
+            st.image(image, caption="✅ Gambar sesuai", width=350, use_container_width=False)
         
         # Preprocess the image and predict disease if it is an eye
         processed_image = preprocess_for_resnet(image)
@@ -81,9 +81,9 @@ if uploaded_image is not None:
         col1, col2, col3 = st.columns([1, 3, 1])
         
         with col2:
-            st.image(image, caption="Gambar yang anda upload tidak sesuai", width=350)
+            st.image(image, caption="❌ Gambar tidak sesuai", width=350)
         
-        st.error("❌❌ Gambar yang anda upload tidak sesuai, Silahkan upload gambar mata yang sesuai dengan contoh di atas ❌❌")
+        st.error("Gambar tidak sesuai, silakan upload gambar yang sesuai contoh di atas.")
 
 # # Footer
 # def footer():

@@ -2,17 +2,17 @@ import streamlit as st
 
 st.title("Home")
 
-st.subheader("Aplikasi Klasifikasi Tingkat Kematangan Sangrai Biji Kopi")
+# st.subheader("Selamat datang di aplikasi klasifikasi citra penyakit mata")
 
-st.markdown("""
-    Aplikasi ini membantu mengklasifikasikan biji kopi menggunakan model deep learning Convolutional Neural Network (CNN) dan Graph Neural Network (GNN). Aplikasi ini dirancang untuk memberikan hasil yang cepat dan akurat, memungkinkan pengguna untuk melakukan klasifikasi biji kopi secara mandiri. Dengan antarmuka yang ramah pengguna dan aksesibilitas melalui platform web bisa memudahkan pengguna untuk mengunggah foto biji kopi dan mendapatkan hasil prediksi dalam waktu singkat.
+# st.markdown("""
+#     **Eye👁️Check.AI** adalah aplikasi berbasis web yang membantu mengklasifikasikan penyakit mata menggunakan model deep learning Convolutional Neural Network (CNN). Aplikasi ini dirancang untuk memberikan hasil yang cepat dan akurat, memungkinkan pengguna untuk melakukan pengecekan mata secara mandiri. Dengan antarmuka yang ramah pengguna dan aksesibilitas melalui platform web, EyeCheck.AI memudahkan pengguna untuk mengunggah foto mata dan mendapatkan hasil prediksi dalam waktu singkat.
 
-    **Jenis Tingkat Kematangan Sangrai Biji Kopi**
-    - Green
-    - Light
-    - Medium
-    - Dark
-""")
+#     **Fokus Klasifikasi Penyakit**
+#     - Bulging Eyes (Exophthalmos)
+#     - Katarak (Cataracts)
+#     - Crossed Eyes (Strabismus)
+#     - Uveitis
+# """)
 
 # st.image("jenis_penyakit_mata.jpg", caption="Fokus Klasifikasi Jenis Penyakit Mata", use_container_width=True)
 
