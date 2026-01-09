@@ -14,38 +14,39 @@ st.markdown("""
     - Dark
 """)
 
-# st.image("jenis_penyakit_mata.jpg", caption="Fokus Klasifikasi Jenis Penyakit Mata", use_container_width=True)
+st.image("image/jenis_kopi.jpeg", caption="Jenis Tingkat Kematangan Sangrai Biji Kopi", use_container_width=True)
 
-# st.markdown("""
-#     **Tujuan Aplikasi**
+st.markdown("""
+    **Tujuan Aplikasi**
     
-#     Aplikasi ini bertujuan untuk membantu pengguna mengklasifikasikan penyakit mata secara dini. Deteksi dini ini memungkinkan penanganan lebih cepat, mengurangi risiko kebutaan, dan mengoptimalkan pengobatan.
+    Aplikasi ini bertujuan untuk membantu pengguna mengklasifikasikan biji kopi yang disangrai secara mandiri. Diharapkan dapat membantu pengguna untuk mempelajari penyangraian biji kopi.
     
-#     **Keunggulan Aplikasi**
-#     - Menggunakan Model 2 CNN Terbaik  
+    **Keunggulan Aplikasi**
+            
+    - Menggunakan 2 Model Machine Learning Terbaik (CNN dan GNN) 
+            
+    - Aksesibilitas Melalui Web 
     
-#     EyeCheck.AI menggunakan 2 arsitektur CNN canggih yang telah diuji coba, yaitu ResNet50 dan VGG16, yang dikenal dengan akurasinya dalam klasifikasi citra medis.
-#     - Aksesibilitas Melalui Web 
-    
-#     Aplikasi ini dirancang untuk diakses dengan mudah melalui platform web menggunakan Streamlit, sehingga pengguna dapat mengunggah foto mata dan mendapatkan hasil prediksi dengan cepat.   
+    Aplikasi ini dirancang untuk diakses dengan mudah melalui platform web menggunakan Streamlit, sehingga pengguna dapat mengunggah foto biji kopi dan mendapatkan hasil prediksi dengan cepat.   
+""")
 
-#     **Pentingnya Kesehatan Mata**
-    
-#     Kesehatan mata memiliki peran vital dalam menjaga kualitas hidup kita sehari-hari. Gangguan pada penglihatan dapat memengaruhi berbagai aspek kehidupan, seperti kemampuan untuk bekerja, belajar, dan menjalani aktivitas sehari-hari secara mandiri. Deteksi dini menjadi kunci utama dalam menjaga kesehatan mata dan mencegah risiko kebutaan yang serius. Menurut data dari Kementerian Kesehatan, lebih dari 80% kasus kebutaan sebenarnya bisa dicegah jika penyakit mata dapat terdeteksi lebih awal dan ditangani dengan tepat.
-# """)
+# Footer
+def footer():
+    st.markdown("""
+        <style>
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            color: #F7F1F0;
+            text-align: right;
+            padding: 5px;
+            font-size: small;
+        }
+        </style>
+        <div class='footer'>© 2026 Elang Al Majid - 210002</div>
+    """, unsafe_allow_html=True)
 
-# st.image("mata_sehat.jpg", caption="Gambaran Mata Sehat", use_container_width=True)
-
-# st.markdown("""
-#     **Eye👁️Check.AI** hadir sebagai solusi inovatif untuk membantu mengklasifikasikan secara dini beberapa penyakit mata. Aplikasi ini sangat berguna bagi mereka yang memiliki keterbatasan akses ke dokter spesialis mata, memberikan kemudahan bagi pengguna di daerah terpencil atau yang menghadapi kendala biaya dan waktu dalam melakukan pemeriksaan langsung. Selain itu, EyeCheck.AI turut meningkatkan kesadaran masyarakat akan pentingnya kesehatan mata, mengingat beberapa penyakit mata tidak menunjukkan gejala signifikan pada tahap awal. Dengan menggunakan teknologi berbasis deep learning, EyeCheck.AI memungkinkan Anda untuk lebih peduli dan proaktif terhadap kesehatan mata Anda.
-    
-    
-#     **Selamat menggunakan Eye👁️Check.AI!**
-# """)
-
-# # Footer
-# def footer():
-#     st.markdown("<div class='footer'>© 2024 Muhammad Giat - 210013 - Eye👁️Check.AI </div>", unsafe_allow_html=True)
-
-# # Display footer
-# footer()
+# Display footer
+footer()

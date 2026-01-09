@@ -27,7 +27,7 @@
     text-align: center !important;
     font-family: 'Playfair Display', serif !important;
     font-weight: 700 !important;
-    color: #A15C38 !important;
+    /* color: #A15C38 !important; */
     padding-bottom: 40px !important;
 }
 
@@ -39,7 +39,7 @@
     text-align: center !important;
     font-family: 'Merriweather', serif !important;
     font-weight: 500 !important;
-    color: #8D6E63 !important;
+    /* color: #8D6E63 !important; */
     padding-bottom: 30px !important;
 }
 
@@ -54,7 +54,7 @@
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: #A15C38;
+    /* background-color: #A15C38; */
     color: #F7F1F0;
     text-align: right;
     padding: 5px;
@@ -63,7 +63,7 @@
 
 /* Style Button */
 .stButton>button {
-    background-color: #A15C38;
+    /* background-color: #A15C38; */
     color: #F7F1F0;
     padding: 10px 24px;
     font-size: 16px;
@@ -75,7 +75,7 @@
 
 /* Style Button Hover */
 .stButton>button:hover {
-    background-color: #C3A6A0;
+    /* background-color: #C3A6A0; */
     color: #F7F1F0;
 }
 

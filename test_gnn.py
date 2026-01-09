@@ -106,9 +106,6 @@ def predict_image(img: Image.Image):
 
         probs = torch.softmax(logits, dim=1).cpu().numpy()  # [1, NUM_CLASSES]
 
-        # Debug
-        # st.write(f"Debug: logits shape={logits.shape}, probs shape={probs.shape}")
-
         # Validasi output
         if probs.shape[0] == 0 or probs.shape[1] != NUM_CLASSES:
             st.error(f"Output model tidak sesuai. Expected NUM_CLASSES={NUM_CLASSES}, got {probs.shape}")
@@ -122,6 +119,14 @@ def predict_image(img: Image.Image):
         return None, None, None
 
 # ================== STREAMLIT UI ==================
+
+# Center alignment
+col1, col2, col3 = st.columns([1, 1, 1])
+with col2:
+    st.image("green-11-_png.rf.bf3173dad6a550323a3f1b789ca7e756.jpg", 
+             caption="Contoh upload gambar yang sesuai",
+             width=200)
+
 uploaded_file = st.file_uploader("Silahkan upload gambar biji kopi anda", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
@@ -136,11 +141,6 @@ if uploaded_file is not None:
             label, conf, probs = predict_image(image)
             if label is not None:
                 st.success(f"**Hasil:** {label} ({conf*100:.2f}% confidence)")
-                # df = pd.DataFrame({
-                #     "Kelas": CLASSES,
-                #     "Confidence (%)": (probs * 100).round(2)
-                # })
-                # st.dataframe(df)
 
     else:
         col1, col2, col3 = st.columns([1, 3, 1])
@@ -149,7 +149,23 @@ if uploaded_file is not None:
         st.error("Gambar tidak sesuai, silakan upload gambar yang sesuai contoh di atas.")
 
 
-# ================== FOOTER ==================
-# def footer():
-#     st.markdown("<div class='footer'>© 2025 — Inception + MobileViG Inference</div>", unsafe_allow_html=True)
-# footer()
+# Footer
+def footer():
+    st.markdown("""
+        <style>
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            color: #F7F1F0;
+            text-align: right;
+            padding: 5px;
+            font-size: small;
+        }
+        </style>
+        <div class='footer'>© 2026 Elang Al Majid - 210002</div>
+    """, unsafe_allow_html=True)
+
+# Display footer
+footer()

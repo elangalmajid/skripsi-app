@@ -1,6 +1,5 @@
 import streamlit as st
 
-
 # Setup Page
 home_page = st.Page(
     "home.py",
@@ -37,9 +36,6 @@ pg = st.navigation(
         "Information": [info_cnn, info_gnn],
     }
 )
-
-# Logo EyeCheck.AI
-#st.logo("eye_check.png")
 
 # Run Page
 pg.run()

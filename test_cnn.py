@@ -5,10 +5,8 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 from PIL import Image
 
-# Load the trained ResNet50 model for disease prediction
 resnet_model = load_model("model_cnn_4.h5")
 
-# Load the InceptionV3 model for eye image verification
 inception_model = load_model("model_Inception.h5")
 
 # Define classes and descriptions for ResNet50
@@ -32,30 +30,31 @@ def preprocess_for_resnet(image, target_size=(240, 240)):
 label_index = 0  
 non_label_index = 1  
 
-# Function to check if image contains an eye using the InceptionV3 model
 def is_image(image, threshold=0.5):
     processed_image = preprocess_for_inception(image)
     predictions = inception_model.predict(processed_image)
     
-    # Check if the model classifies the image as human eyes based on the threshold
     if predictions[0][label_index] > threshold:
-        return True  # Image is likely to be of human eyes
-    return False  # Image is likely non-eye content
+        return True  
+    return False  
 
 # Streamlit App
-# st.title("Klasifikasi Tingkat Kematangan Sangrai Biji Kopi Menggunakan CNN dengan ResNet50")
 st.set_page_config(page_title="Klasifikasi Biji Kopi", page_icon="☕", layout="centered")
 st.title("☕ Klasifikasi Tingkat Kematangan Sangrai Biji Kopi dengan CNN")
 
 # Show example image for uploading instructions
-# st.image("petunjuk_gambar.png", caption="Contoh upload gambar mata yang sesuai", use_container_width=True)
+# Center alignment
+col1, col2, col3 = st.columns([1, 1, 1])
+with col2:
+    st.image("green-11-_png.rf.bf3173dad6a550323a3f1b789ca7e756.jpg", 
+             caption="Contoh upload gambar yang sesuai",
+             width=200)
 
 uploaded_image = st.file_uploader("Silahkan upload gambar biji kopi anda", type=["jpg", "png", "jpeg"])
 
 if uploaded_image is not None:
     image = Image.open(uploaded_image).convert("RGB")
 
-    # Check if the uploaded image is an eye image
     if is_image(image):
         # Membuat kolom untuk memusatkan gambar
         col1, col2, col3 = st.columns([1, 3, 1])
@@ -64,7 +63,6 @@ if uploaded_image is not None:
             # Preview gambar di tengah dengan ukuran terkontrol
             st.image(image, caption="✅ Gambar sesuai", width=350, use_container_width=False)
         
-        # Preprocess the image and predict disease if it is an eye
         processed_image = preprocess_for_resnet(image)
         
         if st.button("🔍 Proses"):
@@ -74,8 +72,6 @@ if uploaded_image is not None:
             predicted_class = classes[class_index]
 
             st.success(f"**Hasil:** {predicted_class} ({confidence:.2f}% confidence)")
-            #st.write("**Deskripsi Prediksi:**")
-            #st.markdown(descriptions[predicted_class])
     else:
         # Membuat kolom untuk memusatkan gambar yang tidak valid
         col1, col2, col3 = st.columns([1, 3, 1])
@@ -85,9 +81,23 @@ if uploaded_image is not None:
         
         st.error("Gambar tidak sesuai, silakan upload gambar yang sesuai contoh di atas.")
 
-# # Footer
-# def footer():
-#     st.markdown("<div class='footer'>© 2024 Muhammad Giat - 210013 - Eye👁️Check.AI </div>", unsafe_allow_html=True)
+# Footer
+def footer():
+    st.markdown("""
+        <style>
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            color: #F7F1F0;
+            text-align: right;
+            padding: 5px;
+            font-size: small;
+        }
+        </style>
+        <div class='footer'>© 2026 Elang Al Majid - 210002</div>
+    """, unsafe_allow_html=True)
 
-# # Display footer
-# footer()
+# Display footer
+footer()
